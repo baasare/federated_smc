@@ -98,18 +98,19 @@ def n_to_tensor_shares(tensor, owners, Q=None):
     assert len(owners) == len(set(owners))
     tensor_dim_1 = False
 
-    if tensor.ndim == 1:
-        tensor_dim_1 = True
-        tensor = np.expand_dims(tensor, axis=1)
+    # if tensor.ndim == 1:
+    #     tensor_dim_1 = True
+    #     tensor = np.expand_dims(tensor, axis=1)
 
     # Generate the value of each secret share using additive secret sharing
     random_values = [random.randrange(Q) for _ in range(np.prod((tensor.shape + (len(owners) - 1,))))]
-    random_shares = np.array(random_values).reshape(len(owners) - 1, tensor.shape[0], tensor.shape[1])
+    new_shape = [len(owners) - 1] + list(tensor.shape)
+    random_shares = np.array(random_values).reshape(new_shape)
 
     values = np.concatenate([random_shares, [(tensor - random_shares.sum(axis=0)) % Q]])
 
-    if tensor_dim_1:
-        values = [np.squeeze(value) for value in values]
+    # if tensor_dim_1:
+    #     values = [np.squeeze(value) for value in values]
 
     # Give one secret Share to each machine
     shares = [Share(value, owner, Q) for value, owner in zip(values, owners)]
