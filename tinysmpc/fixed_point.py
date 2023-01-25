@@ -11,7 +11,7 @@ MIN_FLOAT = MIN_INT64 / 10**PRECISION  # -92233720368.54776 (floats must be >, n
 def fixed_point(fl):
     '''Converts a float to an fixed point int, with PRECISION decimal points of precision.'''
     if math.isnan(fl):
-        print(fl)
+        fl = 0
     # assert MIN_FLOAT < fl < MAX_FLOAT
     return int(fl * 10**PRECISION)
 
